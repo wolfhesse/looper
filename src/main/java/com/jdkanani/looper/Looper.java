@@ -18,12 +18,11 @@ public final class Looper {
 	private static Router router;
 
 
-	private static String host = "127.0.0.1";
-	private static int port = 5001;
 	private static boolean running = false;
 
 	static {
 		router = Router.getInstance();
+        server = new LooperServer();
 	}
 
 	private Looper() {}
@@ -33,9 +32,6 @@ public final class Looper {
 	 */
 	public static void start() {
 		if (running) return;
-		server = new LooperServer();
-		server.setHost(host);
-		server.setPort(port);
 		running = true;
 		new Thread(server::start).start();
 	}
@@ -60,25 +56,51 @@ public final class Looper {
 		return running;
 	}
 
-	public static String getHost() {
-		return host;
-	}
+    public static String getHost() {
+        return server.getHost();
+    }
 
-	public static void setHost(String host) {
+    public static void setHost(String host) {
 		if (running) throwRunningException();
-		Looper.host = host;
+        server.setHost(host);
 	}
 
 	public int getPort() {
-		return port;
-	}
+        return server.getPort();
+    }
 
 	public static void setPort(int port) {
 		if (running) throwRunningException();
-		Looper.port = port;
+        server.setPort(port);
 	}
 
-	/**
+    public static String getStaticFolder() {
+        return server.getStaticFolder();
+    }
+
+    /**
+     * Static files root folder which is in classpath
+     *
+     * @param path
+     */
+    public static void setStaticFolder(String path) {
+        server.setStaticFolder(path);
+    }
+
+    public static String getExternalStaticFolder() {
+        return server.getExternalStaticFolder();
+    }
+
+    /**
+     * External static root directory
+     *
+     * @param path
+     */
+    public static void setExternalStaticFolder(String path) {
+        server.setExternalStaticFolder(path);
+    }
+
+    /**
 	 * clears all routes
 	 */
 	public static void clearRoutes(){
@@ -191,7 +213,9 @@ public final class Looper {
     	route(HttpMethod.options.name(), path, routeHandler);
     }
 
-
+   /**
+     * Throws illegal state exception
+     */
     private static void throwRunningException() {
     	throw new IllegalStateException("Cannot perform this operation! Application is running.");
     }

@@ -1,17 +1,29 @@
 package com.jdkanani.looper.webserver;
 
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import com.jdkanani.looper.servlet.LooperFilter;
+import org.eclipse.jetty.util.resource.Resource;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LooperServer {
 	private final static String ALL_ROUTE = "/*";
 
-	private String host;
-	private int port;
+	private String host = "127.0.0.1";
+	private int port = 5001;
+    private String staticFolder;
+    private String externalStaticFolder;
 
 	private Server server;
 
@@ -26,10 +38,29 @@ public class LooperServer {
         server = connector.getServer();
         server.setConnectors(new Connector[]{ connector });
 
+        // Handler list
+        HandlerList handlers = new HandlerList();
+
+        // Set static file location
+        ResourceHandler staticHandler = getStaticHandler();
+        ResourceHandler externalStaticHandler = getExternalStaticHandler();
+
+        if (staticHandler != null) {
+            handlers.addHandler(staticHandler);
+        }
+
+        if (externalStaticHandler != null) {
+            handlers.addHandler(externalStaticHandler);
+        }
+
         // Looper filter
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addFilter(LooperFilter.class, ALL_ROUTE, null);
-        server.setHandler(context);
+        handlers.addHandler(context);
+
+
+        // Add all handlers to jetty server
+        server.setHandler(handlers);
 
         try {
         	System.out.println("==>> Looper has started! ");
@@ -49,11 +80,68 @@ public class LooperServer {
 		}
 	}
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public void setPort(int port) {
-		this.port = port;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setStaticFolder(String staticFolder) {
+        this.staticFolder = staticFolder;
+    }
+
+
+    public String getStaticFolder() {
+        return staticFolder;
+    }
+
+    public void setExternalStaticFolder(String externalStaticFolder) {
+        this.externalStaticFolder = externalStaticFolder;
+    }
+
+    public String getExternalStaticFolder() {
+        return externalStaticFolder;
+    }
+
+    /**
+     * Gets static file location
+     */
+    private ResourceHandler getStaticHandler() {
+        if (staticFolder != null) {
+            ResourceHandler resourceHandler = new ResourceHandler();
+            Resource staticResources = Resource.newClassPathResource(staticFolder);
+            if (staticResources != null) {
+                resourceHandler.setBaseResource(staticResources);
+                resourceHandler.setWelcomeFiles(new String[] { "index.html" });
+                return resourceHandler;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets external static file location
+     */
+    private ResourceHandler getExternalStaticHandler() {
+        if (externalStaticFolder != null) {
+            ResourceHandler resourceHandler = new ResourceHandler();
+            Resource staticResources = Resource.newResource(new File(externalStaticFolder));
+            if (staticResources != null) {
+                resourceHandler.setBaseResource(staticResources);
+                resourceHandler.setWelcomeFiles(new String[]{ "index.html" });
+                return resourceHandler;
+            }
+        }
+        return null;
+    }
 }
