@@ -10,6 +10,7 @@ public class LooperTest extends TestCase {
     @Test
     public void test() {
         new Thread(Looper::start).start();
+
         assertTrue("Server started!", true);
         try {
             Thread.sleep(3000);

@@ -26,6 +26,10 @@ public class Router {
 		routes = new ArrayList<BaseRoute>();
 	}
 
+    /**
+     * Get instance of Router - Implements singleton pattern
+     * @return Router object
+     */
 	public static Router getInstance() {
 		if (router == null) {
 			router = new Router();
@@ -80,8 +84,8 @@ public class Router {
 	/**
 	 * Get match route entry
 	 *
-	 * @param request
-	 * @param response
+	 * @param request HttpServletRequest object
+	 * @param response HttpServletResponse object
 	 */
 	// TODO may be it should return iterator of matched routes instead first one
 	public BaseRoute getRouteEntries(HttpServletRequest request, HttpServletResponse response) {
@@ -96,8 +100,8 @@ public class Router {
 	/**
 	 * Get matched filters
 	 *
-	 * @param request
-	 * @param response
+	 * @param request HttpServletRequest object
+	 * @param response HttpServletResponse object
 	 */
 	public Iterator<BaseRoute> getFilterEntries(HttpServletRequest request, HttpServletResponse response) {
 		return routes.stream().filter((routeEntry) -> {
@@ -109,20 +113,20 @@ public class Router {
 	/**
 	 * Helper method to match HTTP methods
 	 *
-	 * @param routeEntry
-	 * @param request
+	 * @param baseRoute BaseRoute object - can be filter or route
+	 * @param request HttpServletRequest object
 	 * @return True if method matches or BaseRouteEntry's method in null
 	 */
-	private boolean methodMatches(BaseRoute routeEntry, HttpServletRequest request) {
-		HttpMethod routeMethod = routeEntry.getMethod();
+	private boolean methodMatches(BaseRoute baseRoute, HttpServletRequest request) {
+		HttpMethod routeMethod = baseRoute.getMethod();
 		return routeMethod == null || request.getMethod().equalsIgnoreCase(routeMethod.name());
 	}
 
 	/**
 	 * Helper method to match path
 	 *
-	 * @param baseRoute
-	 * @param request
+	 * @param baseRoute BaseRoute object - can be filter or route
+	 * @param request HttpServletRequest object
 	 * @return True if path matches
 	 */
 	private boolean pathMatches(BaseRoute baseRoute, HttpServletRequest request) {
