@@ -4,9 +4,7 @@ Java 8 web framework
 
 Quick start
 -----------
--   Download [looper.jar](https://bitbucket.org/jdkanani/looper/downloads/looper-20140119.jar) and add to classpath
--   Add [jetty](http://download.eclipse.org/jetty/) to your classpath
--   Following code will start looper application at http://localhost:5000
+-   Following code will start looper application at <http://localhost:5001>
 
 ```java
 import static com.jdkanani.looper.Looper.*;
