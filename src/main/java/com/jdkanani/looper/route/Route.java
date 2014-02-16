@@ -29,12 +29,12 @@ public class Route implements BaseRoute {
 		return path;
 	}
 
-	public RouteHandler getRouteHandler() {
-		return routeHandler;
-	}
-
 	@Override
 	public UriMatcher getPathMatcher() {
 		return pathMatcher;
 	}
+
+    public RouteHandler getRouteHandler() {
+        return routeHandler;
+    }
 }

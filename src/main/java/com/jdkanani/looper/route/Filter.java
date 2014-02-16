@@ -25,12 +25,12 @@ public class Filter implements BaseRoute {
 		return path;
 	}
 
-	public FilterHandler getFilterHandler() {
-		return filterHandler;
-	}
-
 	@Override
 	public UriMatcher getPathMatcher() {
 		return pathMatcher;
 	}
+
+    public FilterHandler getFilterHandler() {
+        return filterHandler;
+    }
 }
