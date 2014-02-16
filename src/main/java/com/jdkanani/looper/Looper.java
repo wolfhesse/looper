@@ -4,8 +4,10 @@ import com.jdkanani.looper.route.FilterHandler;
 import com.jdkanani.looper.route.HttpMethod;
 import com.jdkanani.looper.route.RouteHandler;
 import com.jdkanani.looper.route.Router;
-import com.jdkanani.looper.view.Template;
+import com.jdkanani.looper.view.RythmEngine;
+import com.jdkanani.looper.view.TemplateEngine;
 import com.jdkanani.looper.webserver.LooperServer;
+import org.eclipse.jetty.util.resource.Resource;
 
 import java.io.File;
 
@@ -18,7 +20,7 @@ import java.io.File;
 public final class Looper {
 	private static String name;
 	private static LooperServer server;
-    private static Template template;
+    private static TemplateEngine templateEngine;
 	private static Router router;
 
 	private static boolean running = false;
@@ -26,7 +28,11 @@ public final class Looper {
 	static {
 		router = Router.getInstance();
         server = new LooperServer();
-        template = new Template();
+
+        // Set default template root to "templates" directory
+        try {
+            templateRoot(Resource.newClassPathResource("templates").getFile());
+        } catch (Exception e) {}
 	}
 
 	private Looper() {}
@@ -89,19 +95,22 @@ public final class Looper {
         return staticRoot;
     }
 
-    public static File templateRoot() {
-        return template.getTemplateRoot();
+    public static void templateRoot(File templateRoot) {
+        setTemplateEngine(new RythmEngine(templateRoot));
     }
 
-    public static File templateRoot(File templateFolder) {
-        template.setTemplateRoot(templateFolder);
-        return templateFolder;
+    public static TemplateEngine getTemplateEngine() {
+        return templateEngine;
+    }
+
+    public static void setTemplateEngine(TemplateEngine templateEngine) {
+        Looper.templateEngine = templateEngine;
     }
 
     /**
 	 * clears all routes
 	 */
-	public static void clearRoutes(){
+	public static void clearRoutes() {
 		router.clear();
 	}
 

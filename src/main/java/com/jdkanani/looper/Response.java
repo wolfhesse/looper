@@ -1,6 +1,8 @@
 package com.jdkanani.looper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -61,4 +63,24 @@ public class Response {
 		}
 		return null;
 	}
+
+
+    /**
+     * Render template and make response
+     *
+     * @param templateName template file name
+     */
+    public Object render(String templateName) {
+        return Looper.getTemplateEngine().render(templateName, new HashMap<String, Object>(){});
+    }
+
+    /**
+     * Render template and make response
+     *
+     * @param templateName template file name
+     * @param params map of parameters
+     */
+    public Object render(String templateName, Map<String, Object> params) {
+        return Looper.getTemplateEngine().render(templateName, params);
+    }
 }
