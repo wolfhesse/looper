@@ -4,7 +4,10 @@ import com.jdkanani.looper.route.FilterHandler;
 import com.jdkanani.looper.route.HttpMethod;
 import com.jdkanani.looper.route.RouteHandler;
 import com.jdkanani.looper.route.Router;
+import com.jdkanani.looper.view.Template;
 import com.jdkanani.looper.webserver.LooperServer;
+
+import java.io.File;
 
 /**
  * Main Looper application.<br/>
@@ -15,14 +18,15 @@ import com.jdkanani.looper.webserver.LooperServer;
 public final class Looper {
 	private static String name;
 	private static LooperServer server;
+    private static Template template;
 	private static Router router;
-
 
 	private static boolean running = false;
 
 	static {
 		router = Router.getInstance();
         server = new LooperServer();
+        template = new Template();
 	}
 
 	private Looper() {}
@@ -56,48 +60,42 @@ public final class Looper {
 		return running;
 	}
 
-    public static String getHost() {
+    public static String host() {
         return server.getHost();
     }
 
-    public static void setHost(String host) {
+    public static String host(String host) {
 		if (running) throwRunningException();
         server.setHost(host);
+        return host;
 	}
 
-	public int getPort() {
+	public int port() {
         return server.getPort();
     }
 
-	public static void setPort(int port) {
+	public static int port(int port) {
 		if (running) throwRunningException();
         server.setPort(port);
+        return port;
 	}
 
-    public static String getStaticFolder() {
-        return server.getStaticFolder();
+    public static File staticRoot() {
+        return server.getStaticRoot();
     }
 
-    /**
-     * Static files root folder which is in classpath
-     *
-     * @param path
-     */
-    public static void setStaticFolder(String path) {
-        server.setStaticFolder(path);
+    public static File staticRoot(File staticRoot) {
+        server.setStaticRoot(staticRoot);
+        return staticRoot;
     }
 
-    public static String getExternalStaticFolder() {
-        return server.getExternalStaticFolder();
+    public static File templateRoot() {
+        return template.getTemplateRoot();
     }
 
-    /**
-     * External static root directory
-     *
-     * @param path
-     */
-    public static void setExternalStaticFolder(String path) {
-        server.setExternalStaticFolder(path);
+    public static File templateRoot(File templateFolder) {
+        template.setTemplateRoot(templateFolder);
+        return templateFolder;
     }
 
     /**
