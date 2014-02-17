@@ -5,5 +5,5 @@ import com.jdkanani.looper.Response;
 
 @FunctionalInterface
 public interface FilterHandler {
-	void handle(Request request, Response response, Chain chain);
+    void handle(Request request, Response response, Chain chain);
 }

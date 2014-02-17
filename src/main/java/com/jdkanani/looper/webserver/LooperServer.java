@@ -14,21 +14,20 @@ import java.io.File;
 import java.net.URL;
 
 public class LooperServer {
-	private final static String ALL_ROUTE = "/*";
+    private final static String ALL_ROUTE = "/*";
 
-	private String host = "127.0.0.1";
-	private int port = 5001;
+    private String host = "127.0.0.1";
+    private int port = 5001;
     private File staticRoot;
 
-	private Server server;
+    private Server server;
 
-	public LooperServer() {
+    public LooperServer() {
         File tr = null;
 
         try {
             tr = Resource.newClassPathResource("static").getFile();
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         if (tr != null) {
@@ -36,14 +35,14 @@ public class LooperServer {
         }
     }
 
-	public void start() {
+    public void start() {
         ServerConnector connector = null;
         connector = new ServerConnector(new Server());
         connector.setHost(host);
         connector.setPort(port);
 
         server = connector.getServer();
-        server.setConnectors(new Connector[]{ connector });
+        server.setConnectors(new Connector[]{connector});
 
         // Handler list
         HandlerList handlers = new HandlerList();
@@ -65,22 +64,22 @@ public class LooperServer {
         server.setHandler(handlers);
 
         try {
-        	System.out.println("==>> Looper has started! ");
-        	System.out.println("==>> Running on " + host + ":" + port);
-	        server.start();
-	        server.join();
-	    } catch (Exception ex) {
-	    	ex.printStackTrace();
-	    }
-	}
+            System.out.println("==>> Looper has started! ");
+            System.out.println("==>> Running on " + host + ":" + port);
+            server.start();
+            server.join();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	public void stop() {
-		try {
-			server.stop();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+    public void stop() {
+        try {
+            server.stop();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public String getHost() {
         return host;
@@ -114,7 +113,7 @@ public class LooperServer {
             ResourceHandler resourceHandler = new ResourceHandler();
             if (staticRoot != null) {
                 resourceHandler.setBaseResource(Resource.newResource(staticRoot));
-                resourceHandler.setWelcomeFiles(new String[] { "index.html" });
+                resourceHandler.setWelcomeFiles(new String[]{"index.html"});
                 return resourceHandler;
             }
         }

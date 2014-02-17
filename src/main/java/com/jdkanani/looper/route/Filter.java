@@ -6,29 +6,30 @@ package com.jdkanani.looper.route;
  * @author jdkanani
  */
 public class Filter implements BaseRoute {
-	private String path;
-	private UriMatcher pathMatcher;
-	private FilterHandler filterHandler;
+    private String path;
+    private UriMatcher pathMatcher;
+    private FilterHandler filterHandler;
 
-	public Filter(String path, FilterHandler filterHandler) {
-		this.path = path;
-		this.filterHandler = filterHandler;
-		this.pathMatcher = new UriMatcher(path);
-	}
-	@Override
-	public HttpMethod getMethod() {
-		return null;
-	}
+    public Filter(String path, FilterHandler filterHandler) {
+        this.path = path;
+        this.filterHandler = filterHandler;
+        this.pathMatcher = new UriMatcher(path);
+    }
 
-	@Override
-	public String getPath() {
-		return path;
-	}
+    @Override
+    public HttpMethod getMethod() {
+        return null;
+    }
 
-	@Override
-	public UriMatcher getPathMatcher() {
-		return pathMatcher;
-	}
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public UriMatcher getPathMatcher() {
+        return pathMatcher;
+    }
 
     public FilterHandler getFilterHandler() {
         return filterHandler;
