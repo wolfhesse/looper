@@ -1,7 +1,4 @@
-package com.jdkanani.looper.view;
-
-import org.eclipse.jetty.util.resource.Resource;
-import org.rythmengine.Rythm;
+package com.jdkanani.looper.view.template;
 
 import java.io.File;
 import java.util.HashMap;
@@ -26,6 +23,9 @@ public class RythmEngine implements TemplateEngine {
 
     @Override
     public Object render(String templateName, Map<String, Object> params) {
-        return rythmEngine.render(templateName);
+        if (rythmEngine != null) {
+            return rythmEngine.render(templateName);
+        }
+        return null;
     }
 }

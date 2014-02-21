@@ -1,4 +1,4 @@
-package com.jdkanani.looper.view;
+package com.jdkanani.looper.view.template;
 
 import java.util.Map;
 

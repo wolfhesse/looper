@@ -5,8 +5,8 @@ import com.jdkanani.looper.route.FilterHandler;
 import com.jdkanani.looper.route.HttpMethod;
 import com.jdkanani.looper.route.RouteHandler;
 import com.jdkanani.looper.route.Router;
-import com.jdkanani.looper.view.RythmEngine;
-import com.jdkanani.looper.view.TemplateEngine;
+import com.jdkanani.looper.view.template.RythmEngine;
+import com.jdkanani.looper.view.template.TemplateEngine;
 import com.jdkanani.looper.webserver.LooperServer;
 import org.eclipse.jetty.util.resource.Resource;
 
@@ -32,8 +32,7 @@ public final class Looper {
         // Set default template root to "templates" directory
         try {
             templateRoot(Resource.newClassPathResource("templates").getFile());
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
     }
 
     private Looper() {
