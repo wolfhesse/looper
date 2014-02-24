@@ -123,22 +123,26 @@ public final class Looper {
     /**
      * Adds filter in application scope for all routes
      *
-     * @param filterHandler filter handler
+     * @param filterHandlers filter handlers
      */
-    public synchronized static void filter(FilterHandler filterHandler) {
+    public synchronized static void filter(FilterHandler... filterHandlers) {
         if (running) throwRunningException();
-        router.addFilter("/*", filterHandler);
+        for (FilterHandler filterHandler: filterHandlers) {
+            router.addFilter("/*", filterHandler);
+        }
     }
 
     /**
      * Adds filter in application scope
      *
      * @param path          route path
-     * @param filterHandler filter handler
+     * @param filterHandlers filter handlers
      */
-    public synchronized static void filter(String path, FilterHandler filterHandler) {
+    public synchronized static void filter(String path, FilterHandler... filterHandlers) {
         if (running) throwRunningException();
-        router.addFilter(path, filterHandler);
+        for (FilterHandler filterHandler: filterHandlers) {
+            router.addFilter(path, filterHandler);
+        }
     }
 
     /**
@@ -147,7 +151,8 @@ public final class Looper {
      * @param path
      * @param routeHandler
      */
-    public static void get(String path, RouteHandler routeHandler) {
+    public static void get(String path, RouteHandler routeHandler, FilterHandler... filterHandlers) {
+        filter(path, filterHandlers);
         route(HttpMethod.get.name(), path, routeHandler);
     }
 
@@ -236,14 +241,6 @@ public final class Looper {
      */
     private static void throwRunningException() {
         throw new IllegalStateException("Cannot perform this operation! Application is running.");
-    }
-
-    //
-    // Middlewares
-    //
-
-    public static FilterHandler csrfToken() {
-        return new CSRF();
     }
 }
 

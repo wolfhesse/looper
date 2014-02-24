@@ -45,4 +45,8 @@ public class CSRF implements FilterHandler {
         }
         return null;
     }
+
+    public static FilterHandler csrfToken() {
+        return new CSRF();
+    }
 }
