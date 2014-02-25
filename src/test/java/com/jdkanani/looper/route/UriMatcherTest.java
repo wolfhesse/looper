@@ -1,11 +1,11 @@
 package com.jdkanani.looper.route;
 
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 import org.junit.Test;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author jdkanani
@@ -61,7 +61,8 @@ public class UriMatcherTest extends TestCase {
             try {
                 new UriMatcher(uri);
                 r = true;
-            } catch(NullPointerException |  IllegalArgumentException ex) {}
+            } catch (NullPointerException | IllegalArgumentException ex) {
+            }
             assertTrue("URI ::: `" + uri + "`" + (r ? "passes!" : "fails!"), r == result);
         });
     }

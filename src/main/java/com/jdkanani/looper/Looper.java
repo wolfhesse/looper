@@ -1,9 +1,8 @@
 package com.jdkanani.looper;
 
-import com.jdkanani.looper.middleware.CSRF;
-import com.jdkanani.looper.route.FilterHandler;
+import com.jdkanani.looper.route.Filter;
 import com.jdkanani.looper.route.HttpMethod;
-import com.jdkanani.looper.route.RouteHandler;
+import com.jdkanani.looper.route.Route;
 import com.jdkanani.looper.route.Router;
 import com.jdkanani.looper.view.template.RythmEngine;
 import com.jdkanani.looper.view.template.TemplateEngine;
@@ -32,7 +31,8 @@ public final class Looper {
         // Set default template root to "templates" directory
         try {
             templateRoot(Resource.newClassPathResource("templates").getFile());
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     private Looper() {
@@ -115,125 +115,144 @@ public final class Looper {
     /**
      * Match path to route handler for given HTTP method
      */
-    public synchronized static void route(String method, String path, RouteHandler routeHandler) {
-        if (running) throwRunningException();
-        router.addRouter(method, path, routeHandler);
+    public synchronized static void route(String method, String path, Route route) {
+        router.addRouter(method, path, route);
+    }
+
+    /**
+     * Match path to route handler for given HTTP method
+     */
+    public synchronized static void route(HttpMethod method, String path, Route route) {
+        router.addRouter(method, path, route);
+    }
+
+    /**
+     * Adds filter in application scope for given method and path
+     *
+     * @param filters filter handlers
+     */
+    public synchronized static void filter(String method, String path, Filter... filters) {
+        router.addFilter(method, path, filters);
+    }
+
+    /**
+     * Adds filter in application scope for given method and path
+     *
+     * @param filters filter handlers
+     */
+    public synchronized static void filter(HttpMethod method, String path, Filter... filters) {
+        router.addFilter(method, path, filters);
+    }
+
+    /**
+     * Adds filter in application scope with given path
+     *
+     * @param path    route path
+     * @param filters filter handlers
+     */
+    public synchronized static void filter(String path, Filter... filters) {
+        for (HttpMethod method : HttpMethod.values()) {
+            router.addFilter(method, path, filters);
+        }
     }
 
     /**
      * Adds filter in application scope for all routes
      *
-     * @param filterHandlers filter handlers
+     * @param filters filter handlers
      */
-    public synchronized static void filter(FilterHandler... filterHandlers) {
-        if (running) throwRunningException();
-        for (FilterHandler filterHandler: filterHandlers) {
-            router.addFilter("/*", filterHandler);
-        }
-    }
-
-    /**
-     * Adds filter in application scope
-     *
-     * @param path          route path
-     * @param filterHandlers filter handlers
-     */
-    public synchronized static void filter(String path, FilterHandler... filterHandlers) {
-        if (running) throwRunningException();
-        for (FilterHandler filterHandler: filterHandlers) {
-            router.addFilter(path, filterHandler);
-        }
+    public synchronized static void filter(Filter... filters) {
+        filter("/*", filters);
     }
 
     /**
      * Map path to route handler for HTTP GET request
      *
      * @param path
-     * @param routeHandler
+     * @param route route handler for path
      */
-    public static void get(String path, RouteHandler routeHandler, FilterHandler... filterHandlers) {
-        filter(path, filterHandlers);
-        route(HttpMethod.get.name(), path, routeHandler);
+    public static void get(String path, Route route) {
+        route(HttpMethod.get, path, route);
     }
 
     /**
      * Map path to route handler for HTTP POST request
      *
      * @param path
-     * @param routeHandler
+     * @param route route handler for path
      */
-    public static void post(String path, RouteHandler routeHandler) {
-        route(HttpMethod.post.name(), path, routeHandler);
+    public static void post(String path, Route route) {
+        route(HttpMethod.post, path, route);
     }
 
     /**
      * Map path to route handler for HTTP DELETE request
      *
      * @param path
-     * @param routeHandler
+     * @param route
      */
-    public static void delete(String path, RouteHandler routeHandler) {
-        route(HttpMethod.delete.name(), path, routeHandler);
+    public static void delete(String path, Route route) {
+        route(HttpMethod.delete, path, route);
     }
 
     /**
      * Map path to route handler for HTTP PUT request
      *
      * @param path
-     * @param routeHandler
+     * @param route
      */
-    public static void put(String path, RouteHandler routeHandler) {
-        route(HttpMethod.put.name(), path, routeHandler);
+    public static void put(String path, Route route) {
+        route(HttpMethod.put, path, route);
     }
 
     /**
      * Map path to route handler for HTTP HEAD request
      *
      * @param path
-     * @param routeHandler
+     * @param route
      */
-    public static void head(String path, RouteHandler routeHandler) {
-        route(HttpMethod.head.name(), path, routeHandler);
+    public static void head(String path, Route route) {
+        route(HttpMethod.head, path, route);
     }
 
     /**
      * Map path to route handler for HTTP PATCH request
      *
      * @param path
-     * @param routeHandler
+     * @param route
      */
-    public static void patch(String path, RouteHandler routeHandler) {
-        route(HttpMethod.patch.name(), path, routeHandler);
+    public static void patch(String path, Route route) {
+        route(HttpMethod.patch, path, route);
     }
 
     /**
      * Map path to route handler for HTTP TRACE request
      *
      * @param path
-     * @param routeHandler
+     * @param route
      */
-    public static void trace(String path, RouteHandler routeHandler) {
-        route(HttpMethod.trace.name(), path, routeHandler);
+    public static void trace(String path, Route route) {
+        route(HttpMethod.trace, path, route);
     }
 
     /**
      * Map path to route handler for HTTP CONNECT request
      *
      * @param path
-     * @param routeHandler
+     * @param route
      */
-    public static void connect(String path, RouteHandler routeHandler) {
-        route(HttpMethod.connect.name(), path, routeHandler);
+    public static void connect(String path, Route route) {
+        route(HttpMethod.connect, path, route);
     }
 
     /**
      * Map path to route handler for HTTP OPTIONS request
      *
      * @param path
-     * @param routeHandler
+     * @param route
      */
-    public static void options(String path, RouteHandler routeHandler) {
-        route(HttpMethod.options.name(), path, routeHandler);
+    public static void options(String path, Route route) {
+        route(HttpMethod.options, path, route);
     }
 
     /**
@@ -243,4 +262,3 @@ public final class Looper {
         throw new IllegalStateException("Cannot perform this operation! Application is running.");
     }
 }
-

@@ -1,23 +1,15 @@
 package com.jdkanani.looper.servlet;
 
-import java.io.IOException;
-import java.util.Iterator;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.jdkanani.looper.Request;
 import com.jdkanani.looper.Response;
-import com.jdkanani.looper.route.BaseRoute;
-import com.jdkanani.looper.route.Route;
-import com.jdkanani.looper.route.Router;
-import com.jdkanani.looper.route.Chain;
+import com.jdkanani.looper.route.*;
+
+import javax.servlet.Filter;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Iterator;
 
 public class LooperFilter implements Filter {
     private Router router = null;
@@ -54,7 +46,7 @@ public class LooperFilter implements Filter {
                     Request req = new Request(route, request);
                     Response res = new Response(route, response);
                     try {
-                        ((com.jdkanani.looper.route.Filter) route).getFilterHandler().handle(req, res, this);
+                        ((FilterEntry) route).getFilter().handle(req, res, this);
                     } catch (Exception e) {
                         e.printStackTrace();
                         compose(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error!");
@@ -73,7 +65,7 @@ public class LooperFilter implements Filter {
             Request req = new Request(route, request);
             Response res = new Response(route, response);
             try {
-                Object result = ((Route) route).getRouteHandler().handle(req, res);
+                Object result = ((RouteEntry) route).getRoute().handle(req, res);
                 if (result != null && result instanceof String) {
                     compose(response, HttpServletResponse.SC_OK, result.toString());
                 }

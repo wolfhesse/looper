@@ -1,14 +1,13 @@
 package com.jdkanani.looper;
 
-import java.util.Enumeration;
-import java.util.Map;
+import com.jdkanani.looper.middleware.CSRF;
+import com.jdkanani.looper.route.BaseRoute;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import com.jdkanani.looper.middleware.CSRF;
-import com.jdkanani.looper.route.BaseRoute;
+import java.util.Enumeration;
+import java.util.Map;
 
 public class Request {
     /**
@@ -16,7 +15,7 @@ public class Request {
      */
     private HttpServletRequest request;
     /**
-     * Route/Filter entry object
+     * RouteEntry/FilterEntry entry object
      */
     private BaseRoute route;
     /**

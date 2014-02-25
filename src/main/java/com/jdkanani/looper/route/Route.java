@@ -1,40 +1,55 @@
 package com.jdkanani.looper.route;
 
-/**
- * Represents each route entry
- *
- * @author jdkanani
- */
-public class Route implements BaseRoute {
-    private HttpMethod method;
-    private String path;
-    private RouteHandler routeHandler;
-    private UriMatcher pathMatcher;
+import com.jdkanani.looper.Request;
+import com.jdkanani.looper.Response;
 
-    public Route(HttpMethod method, String path, RouteHandler routeHandler) {
-        this.method = method;
-        this.path = path;
-        this.routeHandler = routeHandler;
+import java.util.Objects;
+import java.util.function.BiConsumer;
 
-        this.pathMatcher = new UriMatcher(path);
+@FunctionalInterface
+public interface Route {
+
+    /**
+     * Handles incoming request with {@code request} and {@code response}.
+     *
+     * @param request  Looper wrapper of incoming request
+     * @param response Looper wrapper of response
+     * @return
+     */
+    Object handle(Request request, Response response);
+
+    /**
+     * Returns a composed function which first applies {@code before} function,
+     * and then handle current request.
+     *
+     * @param before the function to apply before request is handled.
+     * @return a composed function that first applies the {@code before}
+     * function and then handle request
+     * @throws NullPointerException if before is null
+     */
+    default Route compose(BiConsumer<Request, Response> before) {
+        Objects.requireNonNull(before);
+        return (request, response) -> {
+            before.accept(request, response);
+            return handle(request, response);
+        };
     }
 
-    @Override
-    public HttpMethod getMethod() {
-        return method;
-    }
-
-    @Override
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public UriMatcher getPathMatcher() {
-        return pathMatcher;
-    }
-
-    public RouteHandler getRouteHandler() {
-        return routeHandler;
+    /**
+     * Returns a composed function that first handles request,
+     * and then applies the {@code after} function.
+     *
+     * @param after
+     * @return a composed function that first handles this function and then
+     * applies the {@code after} function
+     * @throws NullPointerException if after is null
+     */
+    default Route andThen(BiConsumer<Request, Response> after) {
+        Objects.requireNonNull(after);
+        return (request, response) -> {
+            Object result = handle(request, response);
+            after.accept(request, response);
+            return result;
+        };
     }
 }

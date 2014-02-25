@@ -3,7 +3,7 @@ package com.jdkanani.looper.middleware;
 import com.jdkanani.looper.Request;
 import com.jdkanani.looper.Response;
 import com.jdkanani.looper.route.Chain;
-import com.jdkanani.looper.route.FilterHandler;
+import com.jdkanani.looper.route.Filter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * @author jdkanani
  */
-public class CSRF implements FilterHandler {
+public class CSRF implements Filter {
     public static final String SESSION_TOKEN = "_csrfToken";
     public static final String HEADER_TOKEN = "x-csrf-token";
     public static final String REQUEST_TOKEN = "__csrftoken";
@@ -46,7 +46,7 @@ public class CSRF implements FilterHandler {
         return null;
     }
 
-    public static FilterHandler csrfToken() {
+    public static Filter csrfToken() {
         return new CSRF();
     }
 }

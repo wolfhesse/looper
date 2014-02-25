@@ -1,9 +1,19 @@
 package com.jdkanani.looper.route;
 
-public interface BaseRoute {
-    public String getPath();
+public abstract class BaseRoute {
+    protected HttpMethod method;
+    protected String path;
+    protected UriMatcher pathMatcher;
 
-    public HttpMethod getMethod();
+    public HttpMethod getMethod() {
+        return method;
+    }
 
-    public UriMatcher getPathMatcher();
+    public String getPath() {
+        return path;
+    }
+
+    public UriMatcher getPathMatcher() {
+        return pathMatcher;
+    }
 }

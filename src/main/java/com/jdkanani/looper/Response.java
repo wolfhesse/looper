@@ -1,19 +1,18 @@
 package com.jdkanani.looper;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.jdkanani.looper.route.BaseRoute;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
-import com.jdkanani.looper.route.BaseRoute;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Response {
     private final String UTF8 = "utf-8";
 
     /**
-     * Route/Filter entry object
+     * RouteEntry/FilterEntry entry object
      */
     private BaseRoute route;
     private HttpServletResponse response;

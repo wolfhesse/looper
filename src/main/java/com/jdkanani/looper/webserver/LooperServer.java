@@ -1,17 +1,15 @@
 package com.jdkanani.looper.webserver;
 
+import com.jdkanani.looper.servlet.LooperFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-
-import com.jdkanani.looper.servlet.LooperFilter;
 import org.eclipse.jetty.util.resource.Resource;
 
 import java.io.File;
-import java.net.URL;
 
 public class LooperServer {
     private final static String ALL_ROUTE = "/*";

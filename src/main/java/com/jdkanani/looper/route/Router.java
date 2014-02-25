@@ -1,12 +1,11 @@
 package com.jdkanani.looper.route;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Represents router object for Looper application.</br>
@@ -18,8 +17,8 @@ public class Router {
     private static Router router;
 
     private List<BaseRoute> routes;
-    private Route notFoundEntry;
-    private Route errorEntry;
+    private RouteEntry notFoundEntry;
+    private RouteEntry errorEntry;
 
     private Router() {
         routes = new ArrayList<BaseRoute>();
@@ -40,30 +39,54 @@ public class Router {
     /**
      * Validates and adds to router
      *
-     * @param type         method type for HTTP methods (get, post, ...)
-     * @param path         on which route is mapped to
-     * @param routeHandler mapped handler for given type and path
+     * @param type  method type for HTTP method (get, post, ...)
+     * @param path  on which route is mapped to
+     * @param route mapped handler for given type and path
      */
-    public synchronized void addRouter(String type, String path, RouteHandler routeHandler) {
-        HttpMethod method = null;
-        if (type != null) {
-            method = HttpMethod.valueOf(type.toLowerCase());
-        }
-        Objects.requireNonNull(path, "path must not be null.");
-        Objects.requireNonNull(routeHandler, "Invalid routeHandler for + " + path);
-        routes.add(new Route(method, path, routeHandler));
+    public synchronized void addRouter(String type, String path, Route route) {
+        Objects.requireNonNull(type, "Method type must not be null.");
+        addRouter(HttpMethod.valueOf(type.toLowerCase()), path, route);
     }
 
     /**
      * Validates and adds to router
      *
-     * @param path          on which filter is mapped to
-     * @param filterHandler mapped handler for given path
+     * @param method method for HTTP method
+     * @param path   on which route is mapped to
+     * @param route  mapped handler for given type and path
      */
-    public synchronized void addFilter(String path, FilterHandler filterHandler) {
+    public synchronized void addRouter(HttpMethod method, String path, Route route) {
         Objects.requireNonNull(path, "path must not be null.");
-        Objects.requireNonNull(filterHandler, "Invalid filterHandler for + " + path);
-        routes.add(new Filter(path, filterHandler));
+        Objects.requireNonNull(route, "Invalid route for " + path);
+        Objects.requireNonNull(method, "method must not be null for " + path);
+        routes.add(new RouteEntry(method, path, route));
+    }
+
+    /**
+     * Validates and adds to router
+     *
+     * @param type    method type for HTTP methods (get, post, ...)
+     * @param path    on which filter is mapped to
+     * @param filters mapped handlers for given path
+     */
+    public synchronized void addFilter(String type, String path, Filter... filters) {
+        Objects.requireNonNull(type, "Method type must not be null.");
+        addFilter(HttpMethod.valueOf(type.toLowerCase()), path, filters);
+    }
+
+    /**
+     * Validates and adds to router
+     *
+     * @param method  method for HTTP methods
+     * @param path    on which filter is mapped to
+     * @param filters mapped handlers for given path
+     */
+    public synchronized void addFilter(HttpMethod method, String path, Filter... filters) {
+        Objects.requireNonNull(path, "path must not be null.");
+        Objects.requireNonNull(method, "method must not be null for " + path);
+        for (Filter filter : filters) {
+            routes.add(new FilterEntry(method, path, filter));
+        }
     }
 
     /**
@@ -90,9 +113,9 @@ public class Router {
      */
     // TODO may be it should return iterator of matched routes instead first one
     public BaseRoute getRouteEntries(HttpServletRequest request, HttpServletResponse response) {
-        for (BaseRoute route : routes) {
-            if (route instanceof Route && methodMatches(route, request) && pathMatches(route, request)) {
-                return route;
+        for (BaseRoute routeEntry : routes) {
+            if (routeEntry instanceof RouteEntry && methodMatches(routeEntry, request) && pathMatches(routeEntry, request)) {
+                return routeEntry;
             }
         }
         return null;
@@ -106,7 +129,7 @@ public class Router {
      */
     public Iterator<BaseRoute> getFilterEntries(HttpServletRequest request, HttpServletResponse response) {
         return routes.stream().filter((routeEntry) -> {
-            if (routeEntry instanceof Route) return false;
+            if (routeEntry instanceof RouteEntry) return false;
             return methodMatches(routeEntry, request) && pathMatches(routeEntry, request);
         }).iterator();
     }
@@ -120,7 +143,7 @@ public class Router {
      */
     private boolean methodMatches(BaseRoute baseRoute, HttpServletRequest request) {
         HttpMethod routeMethod = baseRoute.getMethod();
-        return routeMethod == null || request.getMethod().equalsIgnoreCase(routeMethod.name());
+        return request.getMethod().equalsIgnoreCase(routeMethod.name());
     }
 
     /**
@@ -137,14 +160,14 @@ public class Router {
     /**
      * Returns 404 route entry
      */
-    public Route notFoundRoute() {
+    public RouteEntry notFoundRoute() {
         return notFoundEntry;
     }
 
     /**
      * Returns 500 route entry
      */
-    public Route errorRoute() {
+    public RouteEntry errorRoute() {
         return errorEntry;
     }
 }
