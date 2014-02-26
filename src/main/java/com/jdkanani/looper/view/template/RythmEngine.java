@@ -24,7 +24,7 @@ public class RythmEngine implements TemplateEngine {
     @Override
     public Object render(String templateName, Map<String, Object> params) {
         if (rythmEngine != null) {
-            return rythmEngine.render(templateName);
+            return rythmEngine.render(templateName, params);
         }
         return null;
     }

@@ -70,8 +70,7 @@ public class Response {
      * @param templateName template file name
      */
     public Object render(String templateName) {
-        return Looper.getTemplateEngine().render(templateName, new HashMap<String, Object>() {
-        });
+        return Looper.getTemplateEngine().render(templateName, new HashMap<String, Object>());
     }
 
     /**
